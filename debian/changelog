@@ -1,3 +1,11 @@
+openfwwf (5.1-0+c0.sidux.3) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+  * add Vcs-Svn/ Vcs-Browser locations.
+  * enhance short-/ long descriptions.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 29 Jan 2009 21:34:16 +0100
+
 openfwwf (5.1-0+c0.sidux.2) unstable; urgency=low
 
   * add openfwwf.modprobe for now, to disable qos support, which doesn't work
