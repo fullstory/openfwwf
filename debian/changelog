@@ -1,0 +1,25 @@
+openfwwf (5.1-0+c0.sidux.2) unstable; urgency=low
+
+  * add openfwwf.modprobe for now, to disable qos support, which doesn't work
+    with openfwwf yet. Mid term target should be to either support it with
+    openfwwf as well, or to disable it automatically by b43.
+  * comment out a few more debhelper modules, which are not needed yet, but 
+    will be shortly.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 29 Jan 2009 18:24:25 +0100
+
+openfwwf (5.1-0+c0.sidux.1) unstable; urgency=low
+
+  * New upstream release:
+    - now compliant with header format 410.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 29 Jan 2009 13:36:07 +0100
+
+openfwwf (5.0-0+c0.sidux.1) unstable; urgency=low
+
+  * Initial release.
+  * enable DEBUG for now.
+  * use a custom install target, to fix the broken firmware names and missing
+    initvals.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 23 Jan 2009 21:27:08 +0100
