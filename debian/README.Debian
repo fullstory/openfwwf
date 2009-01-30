@@ -26,7 +26,7 @@ The newly specified firmware location /lib/firmware/b43-open/ is only detected
 by kernels >= 2.6.30, while this opensource firmware is supposed to be 
 compatible with kernels >= 2.6.25, these older kernels only look at
 /lib/firmware/b43/ - the default location for the proprietary firmware. 
-Furthermore on kernels >= 2.6.25 but <= 2.6.30, which cannot distinguish the 
+Furthermore on kernels >= 2.6.25 but << 2.6.30, which cannot distinguish the 
 openfwwf from proprietary firmwares at all, it is required to disable hardware
 encryption in addition to QOS support:
         options b43 nohwcrypt=1 qos=0
