@@ -12,7 +12,7 @@ Package: openfwwf
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Open firmware for Broadcom BCM43xx (b43) wlan devices
- This package contains the open source firmware alternative for Broadcom/
+ This package contains the open source firmware alternative for Broadcom
  AirForce BCM43xx wireless lan chipsets, which can be used in combination 
  with the in-kernel b43 module of kernel 2.6.30 or above.
  .
