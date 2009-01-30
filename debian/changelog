@@ -1,10 +1,10 @@
-openfwwf (5.1-0+c0.sidux.3) UNRELEASED; urgency=low
+openfwwf (5.1-0+c0.sidux.3) unstable; urgency=low
 
-  * NOT RELEASED YET
   * add Vcs-Svn/ Vcs-Browser locations.
   * enhance short-/ long descriptions.
+  * add README.Debian, stating the compatibility requirements.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 29 Jan 2009 21:34:16 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 30 Jan 2009 01:03:08 +0100
 
 openfwwf (5.1-0+c0.sidux.2) unstable; urgency=low
 
