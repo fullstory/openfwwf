@@ -1,32 +1,32 @@
-This package was debianized by:
-    Stefan Lippers-Hollmann <s.l-h@gmx.de> on Fri, 23 Jan 2009 21:19:32 +0100
+Format-Specification: http://wiki.debian.org/Proposals/CopyrightFormat?action=recall&rev=428
+Upstream-Name: openfwwf
+Upstream-Maintainer: OpenFWWF team <openfwwf@ing.unibs.it>
+Upstream-Source: http://www.ing.unibs.it/openfwwf/firmware/
 
-It was downloaded from:
-    http://www.ing.unibs.it/openfwwf/firmware/
+Files: *
+Copyright: Copyright © 2008 Michael Buesch <mb@bu3sch.de>
+Copyright: Copyright © 2008-2009 Lorenzo Nava <navalorenx@gmail.com>
+Copyright: Copyright © 2008-2009 Francesco Gringoli <francesco.gringoli@ing.unibs.it>
+Copyright: Copyright © 2009 University of Brescia
+License: GPL-2
 
-Copyright:
-    Copyright © 2008 Michael Buesch <mb@bu3sch.de>
-    Copyright © 2008-2009 Lorenzo Nava <navalorenx@gmail.com>
-    Copyright © 2008-2009 Francesco Gringoli <francesco.gringoli@ing.unibs.it>
-    Copyright © 2009 University of Brescia
+Files: debian/*
+Copyright: Copyright © 2009, Stefan Lippers-Hollmann <s.l-h@gmx.de>
+License: GPL-2
 
-License:
-   This package is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License version 2 as
-   published by the Free Software Foundation.
-
-    This package is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this package; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-On Debian systems, the complete text of the GNU General
-Public License can be found in '/usr/share/common-licenses/GPL-2'.
-
-The Debian packaging is:
-    Copyright © 2009, Stefan Lippers-Hollmann <s.l-h@gmx.de>
-    and is licensed under the GPL2, see above.
+License: GPL-2
+  This package is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License version 2 as
+  published by the Free Software Foundation.
+  .
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  .
+  You should have received a copy of the GNU General Public License
+  along with this package; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+  .
+  On Debian systems, the complete text of the GNU General
+  Public License can be found in '/usr/share/common-licenses/GPL-2'.
