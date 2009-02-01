@@ -1,11 +1,10 @@
-openfwwf (5.1-0+c0.sidux.4) UNRELEASED; urgency=low
+openfwwf (5.1-0+c0.sidux.4) unstable; urgency=low
 
-  * NOT RELEASED YET
   * use machine interpretable copyright format.
   * remover boilerplate comments from debian/rules and debian/watch.
   * disable firmware debugging.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Feb 2009 01:09:31 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Feb 2009 04:25:07 +0100
 
 openfwwf (5.1-0+c0.sidux.3) unstable; urgency=low
 
