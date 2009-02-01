@@ -1,3 +1,9 @@
+openfwwf (5.1-0+c0.sidux.5) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Feb 2009 04:27:42 +0100
+
 openfwwf (5.1-0+c0.sidux.4) unstable; urgency=low
 
   * use machine interpretable copyright format.
