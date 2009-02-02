@@ -39,7 +39,7 @@ openfwwf (5.1-0+c0.sidux.1) unstable; urgency=low
 
 openfwwf (5.0-0+c0.sidux.1) unstable; urgency=low
 
-  * Initial release.
+  * Initial release (Closes: #513974).
   * enable DEBUG for now.
   * use a custom install target, to fix the broken firmware names and missing
     initvals.
