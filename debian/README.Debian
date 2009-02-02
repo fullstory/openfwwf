@@ -2,8 +2,9 @@ openfwwf for Debian
 -------------------
 
 openfwwf currently doesn't support hardware encryption and QOS at this moment,
-while hardware encryption gets automatically disabled by b43, if openfwwf is
-detected, qos=0 needs to be set by /etc/modprobe.d/openfwwf.
+while hardware encryption gets automatically disabled by b43 due to the 
+absence of pcm5.fw, if openfwwf is detected, qos=0 needs to be set by 
+/etc/modprobe.d/openfwwf.
 
 At the time of this writing, the contents of /etc/modprobe.d/openfwwf are 
 therefore:
@@ -26,11 +27,7 @@ The newly specified firmware location /lib/firmware/b43-open/ is only detected
 by kernels >= 2.6.30, while this opensource firmware is supposed to be 
 compatible with kernels >= 2.6.25, these older kernels only look at
 /lib/firmware/b43/ - the default location for the proprietary firmware. 
-Furthermore on kernels >= 2.6.25 but << 2.6.30, which cannot distinguish the 
-openfwwf from proprietary firmwares at all, it is required to disable hardware
-encryption in addition to QOS support:
-        options b43 nohwcrypt=1 qos=0
-Starting with kernel 2.6.30, hardware encryption will be disabled 
-automatically, if openfwwf is detected and only qos=0 needs to remain.
+Furthermore on kernels >= 2.6.25 but << 2.6.30, which cannot distinguish
+openfwwf from proprietary firmwares at all.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 30 Jan 2009 00:40:59 +0100
