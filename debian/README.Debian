@@ -4,15 +4,15 @@ openfwwf for Debian
 openfwwf currently doesn't support hardware encryption and QOS at this moment,
 while hardware encryption gets automatically disabled by b43 due to the 
 absence of pcm5.fw, if openfwwf is detected, qos=0 needs to be set by 
-/etc/modprobe.d/openfwwf.
+/etc/modprobe.d/openfwwf.conf.
 
-At the time of this writing, the contents of /etc/modprobe.d/openfwwf are 
+At the time of this writing, the contents of /etc/modprobe.d/openfwwf.conf are
 therefore:
         options b43 qos=0
 
 While b43 prefers the proprietary Broadcom firmware, if it is available under
-/lib/firmware/b43/, /etc/modprobe.d/openfwwf enforces qos=0 while loading b43 
-for all firmwares. In the end b43 should be able to determine the firmware
+/lib/firmware/b43/, /etc/modprobe.d/openfwwf.conf enforces qos=0 while loading
+b43 for all firmwares. In the end b43 should be able to determine the firmware
 capabilities on its, but this isn't implemented yet.
 
 Right now, this means that currently openfwwf should be purged, if quality of 
