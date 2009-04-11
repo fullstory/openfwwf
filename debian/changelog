@@ -1,3 +1,9 @@
+openfwwf (5.1-0+c0.sidux.7) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 11 Apr 2009 15:23:45 +0200
+
 openfwwf (5.1-0+c0.sidux.6) unstable; urgency=low
 
   * drop /etc/modprobe.d/openfwwf.conf and ship it only as example in
