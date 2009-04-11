@@ -1,8 +1,12 @@
-openfwwf (5.1-0+c0.sidux.6) UNRELEASED; urgency=low
+openfwwf (5.1-0+c0.sidux.6) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * drop /etc/modprobe.d/openfwwf.conf and ship it only as example in
+    /usr/share/doc/openfwwf/examples/openfwwf.conf, it is no longer 
+    required for kernel >= 2.6.31.
+  * overhaul package description and README.Debian.
+  * bump policy version to 3.8.1, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 05 Mar 2009 22:18:38 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 11 Apr 2009 15:12:59 +0200
 
 openfwwf (5.1-0+c0.sidux.5) unstable; urgency=low
 

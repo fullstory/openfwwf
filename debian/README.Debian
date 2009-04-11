@@ -1,33 +1,46 @@
-openfwwf for Debian
+OpenFWWF for Debian
 -------------------
 
-openfwwf currently doesn't support hardware encryption and QOS at this moment,
-while hardware encryption gets automatically disabled by b43 due to the 
-absence of pcm5.fw, if openfwwf is detected, qos=0 needs to be set by 
-/etc/modprobe.d/openfwwf.conf.
+OpenFWWF has so far only been tested with "core revision 5" (as identified by
+the module initialisation routine in dmesg for kernels >= 2.6.30) variants of
+the following Broadcom AirForce wlan chipsets:
 
-At the time of this writing, the contents of /etc/modprobe.d/openfwwf.conf are
-therefore:
-        options b43 qos=0
+  * BCM4306
+  * BCM4311 revision 1
+  * BCM4318
+  * BCM4320
 
-While b43 prefers the proprietary Broadcom firmware, if it is available under
-/lib/firmware/b43/, /etc/modprobe.d/openfwwf.conf enforces qos=0 while loading
-b43 for all firmwares. In the end b43 should be able to determine the firmware
-capabilities on its, but this isn't implemented yet.
+While it might work with later core revisions as well, their RF behaviour is
+not validated and might damage the hardware or violate frequency spectrum
+regulations.
 
-Right now, this means that currently openfwwf should be purged, if quality of 
-service support is required in combination with the proprietary firmwares, 
-which may be installed by b43-fwcutter.
+OpenFWWF currently does not support hardware encryption and QOS yet. While
+kernel >= 2.6.31 will detect and support this automatically, b43 needs to be
+loaded with nohwcrypt=1 and qos=0 for older ones. To force these module
+options automatically, it is recommended to install a module-init-tools
+override /etc/modprobe.d/openfwwf.conf with the following contents:
 
-openfwwf >= 5.1 is compliant to the 410 header format and only works with 
-kernels >= 2.6.25, older kernels require firmwares with a 351 header format
-(openfwwf <= 5.0).
+	options b43 nohwcrypt=1 qos=0
 
-The newly specified firmware location /lib/firmware/b43-open/ is only detected
-by kernels >= 2.6.30, while this opensource firmware is supposed to be 
-compatible with kernels >= 2.6.25, these older kernels only look at
-/lib/firmware/b43/ - the default location for the proprietary firmware. 
-Furthermore on kernels >= 2.6.25 but << 2.6.30, which cannot distinguish
-openfwwf from proprietary firmwares at all.
+Or to just copy the corresponding example
+	/usr/share/doc/openfwwf/examples/openfwwf.conf
+to
+	/etc/modprobe.d/openfwwf.conf
+
+openfwwf >= 5.1 is compatible to the 410 header format of the proprietary
+Broadcom firmware and only works with kernels >= 2.6.25, older kernels require
+firmwares with a 351 header format (openfwwf <= 5.0).
+
+The newly specified firmware location /lib/firmware/b43-open/ is only
+considered by kernels >= 2.6.30, older kernels expect the b43 firmware under
+/lib/firmware/b43/. While OpenFWWF is supposed to be binary compatible with
+kernels >= 2.6.25, it would be required to symlink /lib/firmware/b43-open/ to
+/lib/firmware/b43/, the default location for the proprietary firmware, in order
+to use OpenFWWF kernel 2.6.25 - 2.6.29.
+
+As OpenFWWF is still considered to be experimental software, the b43 kernel
+maintainers ask you to confirm eventual issues with the proprietary firmware
+(as installed by b43-fwcutter in non-free) as well, before reporting any bugs
+against the b43 kernel module.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 30 Jan 2009 00:40:59 +0100

@@ -35,6 +35,7 @@ binary-indep: install
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
+	dh_installexamples
 	dh_install
 	dh_installmodules
 	dh_compress
