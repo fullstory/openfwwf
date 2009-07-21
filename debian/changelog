@@ -4,8 +4,9 @@ openfwwf (5.2-0~c0.sidux.1) unstable; urgency=low
     - prevent firmware from suspending after PHY errors.
     - the install target now covers all file under their correct name.
   * switch to using the upstream Makefile's install target.
+  * bump standards version to 3.8.2, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 21 Jul 2009 22:50:38 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 21 Jul 2009 22:52:27 +0200
 
 openfwwf (5.1-0+c0.sidux.6) unstable; urgency=low
 
