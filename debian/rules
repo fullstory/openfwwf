@@ -28,7 +28,7 @@ install: build
 	dh_installdirs
 	
 	# currently not working, we use dh_install instead
-	#$(MAKE) PREFIX=$(CURDIR)/debian/openfwwf/lib/firmware/b43-open install
+	$(MAKE) PREFIX=$(CURDIR)/debian/openfwwf/lib/firmware/b43-open install
 
 binary-indep: install
 	dh_testdir
