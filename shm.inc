@@ -175,6 +175,8 @@
 #define SHM_TXHEADER		SHM(0x83C) /* start of the tx header buffer in shm */
 #define SHM_RXHEADER		SHM(0xA08) /* start of the tx header buffer in shm */
 
+#define SHM_BEACON_TIM_PTR	SHM(0xAB0) /* temporary memory buffer for beacon analysis */
+
 #define SHM_BCNVAL0		SHM(0x65C) /* Values within second level tables used for beacon */
 #define SHM_BCNVAL1		SHM(0x6FC) /* Values within second level tables used for beacon */
 

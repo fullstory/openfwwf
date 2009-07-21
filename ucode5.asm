@@ -4,9 +4,9 @@
 *
 *  Copyright (C) 2009		University of Brescia
 *
-*  Copyright (C) 2008  		Michael Buesch <mb@bu3sch.de>
 *  Copyright (C) 2008, 2009	Lorenzo Nava <navalorenx@gmail.com>
 *				Francesco Gringoli <francesco.gringoli@ing.unibs.it>						
+*  Copyright (C) 2008  		Michael Buesch <mb@bu3sch.de>
 *
 *   This program is free software; you can redistribute it and/or
 *   modify it under the terms of the GNU General Public License
@@ -17,6 +17,71 @@
 *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *   GNU General Public License for more details.
 */
+
+// a few notes for beginners
+//
+// 1) this is very important: when removing bytes or copying from FIFO to somewhere
+//    bytes are copied on 32bit boundaries.
+//    So you cannot remove or copy 39 byte, the effect is to remove or copy 40 bytes!
+//
+// 2) when removing and copying bytes from FIFO to SHM you should carefully verify that
+//    the number of bytes left after the copy is greater than 4. Otherwise the system becomes
+//    unstable!!
+//
+// 3) expiration of ack timeout enables COND_TX_PMQ so that handler tx_contention_params_update
+//    is invoked
+//
+// 4) remember to read clock info from SPR_TSF_WORDn always starting from the least significant bits
+//    So if you want to read SPR_TSF_WORD1 and SPR_TSF_WORD0 READ first SPR_TSF_WORD0 and then SPR_TSF_WORD1
+//
+// when a frame that needs to be acknowledged is received by rx_[stuff], the NEED_RESPONSEFR bit is
+// set in SPR_BRC. This will trigger the condition COND_NEED_RESPONSEFR
+// that will be honoured by tx_frame_now that will send and ACK frame.
+//
+// Attention: condition COND_FRAME_NEED_ACK instead evaluates true when
+// the current frame that is being transmitted needs an ack: in this case
+// we will transmit the frame and verify that it will be received within
+// a timeout interval. The need for transmit a frame and verify that
+// an ack will be received is determined inside the tx_frame_now function
+// in the find_tx_frame_type section: if needed the section compute_expected_response
+// will be executed so that the FRAME_NEED_ACK bit will be set in SPR_BRC.
+// 
+
+// explanation for SPR_RXE_FIFOCTL
+// the fifo queue is filled with an rxheader copied from shm, the frame received
+// from air and the fcs. push_frame_into_fifo performs this operation
+//
+// air-buffer for incoming bytes from air
+//     ||         ||
+//     ||         \/
+//     ||      rx-buffer => FIFO to host =====> dma => host
+//     ||                    /\
+//     \/                    ||
+//  copy in SHM        SHM with header
+//
+// bit 0x0800: it seems to be always set
+// bit 0x0020: if set will align the frame in the rx-buffer on a 4 byte boundary after the header copied from shm
+// bit 0x0010: reset: when set the rx-buffer is flushed.
+// bit 0x0004: when set the air-buffer is flushed. Probably also the rooms dedicated to decode the PLCP and
+//             that raise the COND_RX_PLCP are flushed. Flushing complete when it is automatically switched back
+//             to zero.
+//             It is read when plcp is decoded to be sure that flushing is not going.
+// bit 0x0002: when set, the rx buffer is filled with bytes coming from the air-buffer
+//             copying those already present in the air-buffer
+// bit 0x0001: when set advance the rx buffer to the queue copying also the header and the fcs
+//
+//
+
+// explanation for SPR_RXE_0x1a, something related to the pair of air-buffer and rx-buffer
+//
+// bit 0x8000: rxe is in overflow
+// bit 0x4000: after COND_RX_COMPLETE is true, transition from 0 to 1 signals that all bytes have been copied
+//             to the rx-buffer (?), if this is true, i'm not sure, the same does not apply to the copy in shm
+//             (to the area pointed by SPR_RXE_Copy_Offset and whose length is given by SPR_RXE_Copy_Length)
+// bit 0x1000: ?? it seems that we should verify it is zero before handling rx_badplcp
+// bit 0x0800: when set the handler rx_badplcp should delay
+// bit 0x0080: ?? used to skip to set a bit in GLOBAL_FLAGS_REG2 when it is not zero in tx_timers_setup
+
 
 	#include "spr.inc"
 	#include "shm.inc"
@@ -123,7 +188,7 @@
 		jext	COND_TX_DONE, tx_end_wait_10us;					
 
 	check_conditions_no_tx:;
-		jext	COND_TX_PHYERR, check_rx_conditions;					
+		jext	COND_TX_PHYERR, tx_phy_error;
 
 	check_rx_conditions:;
 		jext	EOI(COND_RX_WME8), tx_timers_setup;				
@@ -132,7 +197,7 @@
 		jext	COND_TX_PMQ, tx_contention_params_update;					
 		jext	EOI(COND_RX_BADPLCP), rx_badplcp;			
 		jnext	COND_RX_FIFOFULL, rx_fifofull;				
-		jnext	COND_REC_IN_PROGRESS, rx_fifo_overflow;				
+		jnext	COND_REC_IN_PROGRESS, rx_fifo_overflow;			/* if (SPR_RXE_0x1a & 0x8000) */	
 	rx_fifofull:;
 		jnzx	0, 15, SPR_RXE_0x1a, 0x000, rx_fifo_overflow;		
 		extcond_eoi_only(COND_TX_NAV)
@@ -147,6 +212,8 @@
 // ***********************************************************************************************
 // HANDLER:	channel_setup
 // PURPOSE:	If TBTT expired prepares a beacon transmission else checks FIFO queue for incoming frames.	
+//		The condition on SPR_BRC involves
+//		COND_NEED_BEACON|COND_NEED_RESPONSEFR|COND_NEED_PROBE_RESP|COND_CONTENTION_PARAM_MODIFIED|COND_MORE_FRAGMENT
 //
 	channel_setup:;
 		call	lr2, bg_noise_sample;					/* Create noise sample */
@@ -165,6 +232,8 @@
 // ***********************************************************************************************
 // HANDLER:	prepare_beacon_tx
 // PURPOSE:	Prepares parameters (PHY and MAC) needed for a correct Beacon transmission.
+//		The condition on SPR_BRC involves
+//		COND_NEED_BEACON|COND_NEED_RESPONSEFR|COND_FRAME_BURST|COND_REC_IN_PROGRESS|COND_FRAME_NEED_ACK
 //
 	prepare_beacon_tx:
 		jnand	0x0E3, SPR_BRC, state_machine_idle;
@@ -174,7 +243,7 @@
         	call    lr0, inhibit_sleep_at_tbtt;
 	        jext    COND_TRUE, state_machine_idle;
 	beacon_tx_param_update:
-		jzx	1, 0, SPR_MAC_CMD, 0x000, inhibit_sleep_call;		/* if !(SPR_MAC_Command & (MCMD_BCN0VLD|MCMD_BCN1VLD)) */
+		jzx	1, 0, SPR_MAC_CMD, 0x000, inhibit_sleep_call;		/* if !(SPR_MAC_Command & (MCMD_BCN0VLD|MCMD_BCN1VLD)), comment this line to send beacon anyway */
 		mov	0x001, GP_REG11;
 		jext	COND_TRUE, flush_and_stop_tx_engine;
 	return_flush_into_prepare_beacon_tx:
@@ -215,6 +284,8 @@
 // PURPOSE:	Checks if there is a frame into the FIFO queue. If a frame is incoming from host loads BCM
 //		header into SHM and analyzes frame properties, then prepares PHY and MAC parameters for transmission.
 //		This code should be invoke with TX engine disabled.
+//		The condition on SPR_BRC involves
+//		COND_NEED_BEACON|COND_NEED_RESPONSEFR|COND_NEED_PROBE_RESP|COND_CONTENTION_PARAM_MODIFIED|COND_FRAME_BURST
 //
 	check_tx_data_with_disabled_engine:;			
 		extcond_eoi_only(COND_PHY6);		
@@ -344,8 +415,8 @@
 		orx	1, 1, 0x000, SPR_BRWK0, SPR_BRWK0;			/* SPR_BRWK_0 = SPR_BRWK_0 & ~0x6 */
 		mov	0, SPR_TXE0_WM0;					/* Clear register for template ram byte selection */
 		mov	0, SPR_TXE0_WM1;					/* Clear register for template ram byte selection */
-		jnext	COND_NEED_RESPONSEFR, tx_beacon_or_data;		/* If frame needs response than it is a data frame */
-		mov	0x00FF, SPR_TXE0_WM0;			
+		jnext	COND_NEED_RESPONSEFR, tx_beacon_or_data;		/* If someone need a response send it, otherwise being tx-ting a beacon or data */
+		mov	0x00FF, SPR_TXE0_WM0;					/* Encode the response (an ack here) */
 		srx	0, 5, GLOBAL_FLAGS_REG3, 0x000, GP_REG5;		/* GP_REG5 = ((GLOBAL_FLAGS_REG3) >> 5) & 0x1 */					
 		orx	0, 12, GP_REG5, SPR_TME_VAL6, SPR_TME_VAL6;		/* SPR_TME_VAL6 = (((GP_REG5<<12) | (GP_REG5>>4)) & 0x1000) | (SPR_TME_VAL6 & ~0x1000) */
 		mov	0, SPR_TXE0_SELECT;			
@@ -368,7 +439,7 @@
 		mov	0x006A, GP_REG5;
 	load_beacon_tim:
 		add     GP_REG5, [SHM_TIMBPOS], GP_REG5;
-		mov	0x0558, SPR_BASE5;
+		mov	SHM_BEACON_TIM_PTR, SPR_BASE5;
 		sl	SPR_BASE5, 0x001, SPR_TXE0_TX_SHM_ADDR;
 		mov	0, SPR_TXE0_SELECT;
 		orx     1, 0, 0x000, GP_REG5, SPR_TXE0_Template_TX_Pointer;
@@ -521,7 +592,7 @@
 	update_txe_timeout:;
 		jnext	COND_FRAME_NEED_ACK, dont_update_txe_timeout;			
 		orx	0, 15, 0x001, SPR_TXE0_TIMEOUT, SPR_TXE0_TIMEOUT;		/* SPR_TXE0_TIMEOUT = SPR_TXE0_TIMEOUT | 0x8000 */	
-		jzx     0, 1, GLOBAL_FLAGS_REG2, 0x000, dont_update_txe_timeout;
+		jzx     0, 1, GLOBAL_FLAGS_REG2, 0x000, dont_update_txe_timeout;	/* if (!(GLOBAL_FLAGS_REG2 & 0x02)) */
         	orx     7, 8, 0x080, 0x001, SPR_TXE0_TIMEOUT;
 	dont_update_txe_timeout:;
 		jzx	0, 13, [SHM_HF_LO], 0x000, no_radar_war;			/* if !(SHM_HF_LO & MHF_RADARWAR) */
@@ -580,10 +651,10 @@
 	need_ack:;
 		jext	COND_NEED_RESPONSEFR, need_response_frame;				
 		jext	EOI(COND_TX_UNDERFLOW), tx_underflow;			
-		extcond_eoi_only(COND_TX_PHYERR);
+		jext	EOI(COND_TX_PHYERR), tx_clear_issues;
 		jnext	COND_NEED_BEACON, dont_need_beacon;
 	need_response_frame:;
-		orx	1, 0, 0x000, SPR_BRC, SPR_BRC;				/* SPR_BRC = SPR_BRC & ~0x3 */
+		orx	1, 0, 0x000, SPR_BRC, SPR_BRC;				/* SPR_BRC = SPR_BRC & ~(COND_NEED_BEACON | COND_NEED_RESPONSEFR) */
 		jext	COND_TRUE, state_machine_start;				
 	dont_need_beacon:;
 		mov	DEFAULT_RETRY_LIMIT, SHORT_RETRY_LIMIT;												
@@ -729,6 +800,14 @@
 // ***********************************************************************************************
 // HANDLER:	send_response
 // PURPOSE:	Sends an ACK back to the station whose MAC was contained in the source address header field.
+//		At the end set the NEED_RESPONSEFR bit in SPR_BRC that will trigger the condition COND_NEED_RESPONSEFR
+//		that will be evaluated at next tx_frame_now
+//		Values are taken from the tables in initvals.asm
+//		e.g. for CCK
+//		1Mb/s	(A)	off5=37E
+//		2Mb/s	(4)	off5=389
+//		5.5Mb/s	(7)	off5=394
+//		11Mb/s	(E)	off5=39F
 //
 	send_response:;
 		mov	0x000E, GP_REG5;				
@@ -820,11 +899,13 @@
 // HANDLER:	rx_plcp
 // PURPOSE:	If header was successfully received, extracts from it frame related informations.
 //		Current time is stored inside four registers RX_TIME_WORD[0-3]
+//		RX_PHY_ENCODING stores the kind of encoding for all the succeeding analysis: 0 is CCK, 1 is OFDM
+//		At the beginning switch off the TX engine if it is not
 //
 	rx_plcp:;
 		jext	EOI(COND_RX_FCS_GOOD), rx_plcp;				
 		mov	0, GPHY_SYM_WAR_FLAG;				
-		jnzx	0, 2, SPR_RXE_FIFOCTL1, 0x000, state_machine_idle;		/* if (SPR_RXE_FIFOCTL1 & 0x04) -- No packet available?*/		
+		jnzx	0, 2, SPR_RXE_FIFOCTL1, 0x000, state_machine_idle;		/* if (SPR_RXE_FIFOCTL1 & 0x04) -- Air-buffer is being flushed, try later */
 		jzx	0, 0, SPR_TXE0_CTL, 0x000, sync_rx_frame_time_with_TSF;		/* if (!(SPR_TXE0_CTL & 0x01)) */
 		mov	0, SPR_TXE0_CTL;			
 		orx	2, 0, 0x000, SPR_BRC, SPR_BRC;					/* SPR_BRC = SPR_BRC & ~(NEED_BEACON | NEED_RESPONSEFR | NEED_PROBE_RESP) */
@@ -861,17 +942,16 @@
 		and	GP_REG5, GP_REG6, GP_REG6;					/* GP_REG6 = GP_REG5 & GP_REG6 -- Check if both toDS and fromDS were set */
 		orx	0, 11, GP_REG6, GLOBAL_FLAGS_REG3, GLOBAL_FLAGS_REG3;		/* GLOBAL_FLAGS_REG3 = (((GP_REG6<<11) | (GP_REG6>>5)) & 0x800) | (GLOBAL_FLAGS_REG3 & ~WDS_FRAME) */				
 		and	RX_TYPE_SUBTYPE, 0x023, GP_REG5;				/* GP_REG5 = RX_TYPE_SUBTYPE & 0x23 --  determine if frame is a QoS data frame */	
-		jne	GP_REG5, 0x022, not_qos_data;					/* if (GP_REG5 != 0x22) goto not_qos_data -- Frame type subtype can be (1xyw)(10) */				
-		xor	GP_REG6, 0x001, GP_REG6;					
+		jne	GP_REG5, 0x022, not_qos_data;					/* if (GP_REG5 != 0x22) : if (subtype)(type)!=(1xyw)(10) skip qos check */
+		xor	GP_REG6, 0x001, GP_REG6;					/* bit 0 == 1 if (qos data+!wds frame)|(other+wds frame) */
 		add	SPR_BASE1, 0x00F, SPR_BASE5;					/* SPR_BASE5 = rx_frame_offs + FR_OFFS_DAT -- load offset to access data */
 		jzx	0, 11, GLOBAL_FLAGS_REG3, 0x000, rx_plcp_not_wds;		/* if (!(GLOBAL_FLAGS_REG3 & WDS_FRAME))  */	
-		add	SPR_BASE5, 0x003, SPR_BASE5;				
+		add	SPR_BASE5, 0x003, SPR_BASE5;					/* add 6 bytes if wds (in this case we have addr4 present) */
 	rx_plcp_not_wds:;
-		or	[0x00,off5], 0x000, GP_REG4;					/* GP_REG4 = mem[offs5 + 0x0] -- first byte of data */
-		jzx	1, 5, [0x00,off5], 0x000, not_qos_data;				/* if (!(mem[offs5 + 0x0] & 0x60)) goto not_qos_data -- check if it is a QoS Data*/
-		orx	0, 13, 0x001, GLOBAL_FLAGS_REG3, GLOBAL_FLAGS_REG3;		/* GLOBAL_FLAGS_REG3 = NOT_REGULAR_ACK | (GLOBAL_FLAGS_REG3 & ~NOT_REGULAR_ACK) -- we will expect a not regular ACK*/				
+		jzx	1, 5, [0x00,off5], 0x000, not_qos_data;				/* if (!(mem[offs5 + 0x0] & 0x60)) goto not_qos_data -- in case a non regular ack is needed */
+		orx	0, 13, 0x001, GLOBAL_FLAGS_REG3, GLOBAL_FLAGS_REG3;		/* GLOBAL_FLAGS_REG3 = NOT_REGULAR_ACK | (GLOBAL_FLAGS_REG3 & ~NOT_REGULAR_ACK) */
 	not_qos_data:;
-		orx	0, 5, GP_REG6, 0x000, SPR_RXE_FIFOCTL1;				/* SPR_RXE_FIFOCTL1 = ((GP_REG6<<5) | (GP_REG6>>11)) & 0x20 -- maybe we must forward frames if we are a WDS (??) */
+		orx	0, 5, GP_REG6, 0x000, SPR_RXE_FIFOCTL1;				/* SPR_RXE_FIFOCTL1 = ((GP_REG6<<5) | (GP_REG6>>11)) & 0x20 -- maybe we must forward frames if we are a WDS (??), bit 0x20 will be set with strange combination of qos and wds type, e.g., with no qos data and !wds it is cleared */
 		jext	COND_RX_RAMATCH, rx_plcp_and_ra_match;				/* If the frame wasn't sent to me update NAV else goto rx_plcp_and_ra_match */
 		jnzx	0, 15, [RX_FRAME_DURATION,off1], 0x000, check_frame_version_validity;	/* if (mem[rx_frame_offs + FR_OFFS_DURID] & 0x8000) */
 		or	[RX_FRAME_DURATION,off1], 0x000, SPR_NAV_ALLOCATION;		/* SPR_NAV_ALLOCATION = mem[rx_frame_offs + FR_OFFS_DURID] */
@@ -890,11 +970,11 @@
 		orx	1, 0, 0x002, SPR_RXE_FIFOCTL1, SPR_RXE_FIFOCTL1;	/* SPR_RXE_FIFOCTL1 = 0x2 | (SPR_RXE_FIFOCTL1 & ~0x3) -- clear bit 0*/	
 		srx	7, 0, [RX_FRAME_PLCP_0,off1], 0x000, GP_REG0;		/* GP_REG0 = first PLCP byte */	
 		or	RX_PHY_ENCODING, 0x000, GP_REG1;			/* GP_REG1 = RX_PHY_ENCODING */
-		call	lr0, get_ptr_from_rate_table;				
+		call	lr0, get_ptr_from_rate_table;				/* load off2 and off3 according to GP_REG0 and GP_REG1 */
 		jne	RX_TYPE, 0x002, rx_plcp_not_data_frame;			/* if (RX_TYPE != 0x02) -- if frame is not a data frame goto rx_plcp_not_data_frame */
-		and	RX_TYPE_SUBTYPE, 0x023, GP_REG5;			/* GP_REG5 = RX_TYPE_SUBTYPE & 0x23 -- (00xy)(10) -> data + something */	
-		je	GP_REG5, 0x002, rx_data_plus;				/* Normal data ? */
-		je	GP_REG5, 0x022, rx_data_plus;				/* Data + CF-Poll? */
+		and	RX_TYPE_SUBTYPE, 0x023, GP_REG5;			/* GP_REG5 = RX_TYPE_SUBTYPE & 0x23 -- (x000)(10) -> data, can be qos data */	
+		je	GP_REG5, 0x002, rx_data_plus;				/* no qos data */
+		je	GP_REG5, 0x022, rx_data_plus;				/* qos data, unfortunately we do not implement yet qos... */
 		jext	COND_TRUE, send_response_if_ra_match;			
 	rx_plcp_not_data_frame:;						/* If it is not a data frame */
 		jext	COND_RX_FIFOFULL, rx_fifo_overflow;			
@@ -959,13 +1039,13 @@
 		orx	0, 1, 0x000, SPR_BRC, SPR_BRC;				/* SPR_BRC = SPR_BRC & ~NEED_RESPONSEFR */
 		jext	COND_TRUE, check_frame_subtype;					
 	need_regular_ack:;
-		je	[SHM_CURMOD], 0x001, ofdm_mosulation;			/* OFDM modulation */				
+		je	[SHM_CURMOD], 0x001, ofdm_modulation;			/* check if this response need short preamble */				
 		jne	[SHM_CURMOD], 0x000, no_cck_modulation;			/* Not CCK modulation */
-		jzx	3, 4, [0x01,off2], 0x000, ofdm_mosulation;		/* if( ((mem[offs2 + 0x1] >> 4) & 0xF) == 0 ) */
+		jzx	3, 4, [0x01,off2], 0x000, ofdm_modulation;		/* if( ((mem[offs2 + 0x1] >> 4) & 0xF) == 0 ) */
 	no_cck_modulation:;
-		srx	0, 7, SPR_RXE_PHYRXSTAT0, 0x000, GP_REG5;		/* GP_REG5 = ((SPR_RXE_PHYRXSTAT0) >> 7) & 0x1 */
+		srx	0, 7, SPR_RXE_PHYRXSTAT0, 0x000, GP_REG5;		/* GP_REG5 = ((SPR_RXE_PHYRXSTAT0) >> 7) & 0x1, if set the received frame used short preamble */
 		orx	0, 4, GP_REG5, SPR_TXE0_PHY_CTL, SPR_TXE0_PHY_CTL;	/* SPR_TXE0_PHY_Control = (((GP_REG5<<4) | (GP_REG5>>12)) & 0x10) | (SPR_TXE0_PHY_Control & ~0x10) */
-	ofdm_mosulation:;
+	ofdm_modulation:;
 		orx	0, 1, 0x001, [SHM_RXHDR_MACST_LOW], [SHM_RXHDR_MACST_LOW];	/* rx_hdr.RxStatus1 = rx_hdr.RxStatus1 | 0x2 */
 		or	NEXT_TXE0_CTL, 0x000, SPR_TXE0_CTL;			/* SPR_TXE0_CTL = NEXT_TXE0_CTL */	
 	check_frame_subtype:;
@@ -1028,7 +1108,7 @@
 		or	GP_REG5, 0x000, [SHM_RXHDR_FLEN];			/* rx_hdr.RxFrameSize = GP_REG5 */
 		jzx	0, 5, SPR_RXE_FIFOCTL1, 0x000, no_hdr_length_update;	/* if (!(SPR_RXE_FIFOCTL1 & 0x20)) */
 		add	GP_REG5, [SHM_RXPADOFF], [SHM_RXHDR_FLEN];		/* rx_hdr.RxFrameSize = GP_REG5 + shm_rx_pad_data_offset */
-		orx	0, 2, 0x001, [SHM_RXHDR_MACST_LOW], [SHM_RXHDR_MACST_LOW];	/* rx_hdr.RxStatus1 = rx_hdr.RxStatus1 | 0x4 */
+		orx	0, 2, 0x001, [SHM_RXHDR_MACST_LOW], [SHM_RXHDR_MACST_LOW];	/* rx_hdr.RxStatus1 = rx_hdr.RxStatus1 | 0x4: tell Linux we have padding */
 	no_hdr_length_update:;
 		srx	0, 4, GLOBAL_FLAGS_REG3, 0x000, GP_REG5;		/* GP_REG5 = ((GLOBAL_FLAGS_REG3) >> 4) & 0x1 -- 1 if I received a beacon (not sure) */		
 		orx	0, 15, GP_REG5, [SHM_RXHDR_MACST_LOW], [SHM_RXHDR_MACST_LOW];	/* rx_hdr.RxStatus1 = (((GP_REG5<<15) | (GP_REG5>>1)) & 0x8000) | (rx_hdr.RxStatus1 & ~0x8000) */
@@ -1121,7 +1201,7 @@
 		orx	0, 14, 0x001, [SHM_TXFCUR], SPR_TXE0_FIFO_CMD;		/* SPR_TXE0_FIFO_CMD = SHM_TXFCUR | 0x4000 */
 		mov	0x0307, SPR_WEP_0x50;			 		
 		orx	0, 8, 0x001, SPR_BRC, SPR_BRC;				/* SPR_BRC = SPR_BRC | TX_ERROR */
-		jand	0x007, SPR_BRC, tx_fifo_underflow;			/* if !(0x07 & SPR_BRC) */
+		jand	0x007, SPR_BRC, tx_fifo_underflow;			/* if !(SPR_BRC & (COND_NEED_BEACON | COND_NEED_RESPONSEFR | COND_NEED_PROBE_RESP)) */
 		jext	COND_TRUE, check_underflow_cond;					
 
 // ***********************************************************************************************
@@ -1134,7 +1214,9 @@
 		add	GP_REG5, GP_REG6, SPR_BASE5;				/* SPR_BASE5 = GP_REG5 + GP_REG6 */
 		add	[0x00,off5], 0x001, [0x00,off5];			
 		orx	2, 2, 0x006, [TXHDR_STAT,off0], [TXHDR_STAT,off0];	/* tx_info.tx_status = SUPP_BUF_UFLO | (tx_info.tx_status & ~SUPPRESS_MASK) */
+	tx_clear_issues:;
 		mov	0x0001, GP_REG7;				
+	tx_dont_clear_issues:;
 		jnext	COND_FRAME_NEED_ACK, check_underflow_cond;					
 		orx	0, 7, 0x000, SPR_BRC, SPR_BRC;				/* SPR_BRC = SPR_BRC & ~FRAME_NEED_ACK */				
 		mov	0, EXPECTED_CTL_RESPONSE;				
@@ -1162,8 +1244,19 @@
 		jext	COND_TRUE, suppress_this_frame;				
 
 // ***********************************************************************************************
+// HANDLER:	tx_phy_error
+// PURPOSE:	Manages TX phy errors.
+//
+	tx_phy_error:;
+		jext	COND_FRAME_BURST, check_rx_conditions;
+		jext	COND_FRAME_NEED_ACK, tx_clear_issues; 
+		mov	0, GP_REG7;
+		jext	COND_TRUE, tx_dont_clear_issues;
+
+// ***********************************************************************************************
 // HANDLER:	rx_fifo_overflow	
 // PURPOSE:	Manages RX overflow error.	
+//		Is the first instruction useful to clear some hardware exception? Can be safely removed?
 //
 	rx_fifo_overflow:;
 		jg	SPR_RXE_FRAMELEN, [SHM_MAXPDULEN], overflow_frame_too_long;	/* if (SPR_RXE_RX_Frame_len >u shm_max_mpdu_len) */		
@@ -1175,7 +1268,9 @@
 
 // ***********************************************************************************************
 // HANDLER:	mac_suspend_check	
-// PURPOSE:	Checks if device can be suspended.	
+// PURPOSE:	Checks if device can be suspended.
+//		The condition on SPR_BRC involves
+//		COND_NEED_RESPONSEFR|COND_FRAME_BURST|COND_REC_IN_PROGRESS|COND_FRAME_NEED_ACK
 //
 	mac_suspend_check:;
 		jnand	0x0E2, SPR_BRC, check_conditions;			/* if (0xe2 & SPR_BRC) */			
@@ -1577,6 +1672,8 @@
 // ***********************************************************************************************
 // FUNCTION:	get_rate_table_duration
 // PURPOSE:	Provides duration parameter.
+//		If short preamble is requested, then subracts half of the preamble duration
+//		to overall duration
 //
 	get_rate_table_duration:;
 		or	[0x04,off2], 0x000, GP_REG5;				/* GP_REG5 = mem[offs2 + 0x4] */		
