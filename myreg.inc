@@ -32,7 +32,6 @@
 #define 	GP_REG1			r28
 #define 	GP_REG2			r29
 #define 	GP_REG3			r30		
-#define 	GP_REG4			r31		
 #define 	GP_REG5			r32		
 #define 	GP_REG6			r33		
 #define 	GP_REG7			r34		

@@ -257,10 +257,10 @@
 	mmio32 0x032E032E, MMIO_SHM_DATA
 	mmio32 0x032E032E, MMIO_SHM_DATA
 	mmio32 0x032E032E, MMIO_SHM_DATA
-	mmio32 0x0356036A, MMIO_SHM_DATA
-	mmio32 0x032E0342, MMIO_SHM_DATA
-	mmio32 0x03600374, MMIO_SHM_DATA
-	mmio32 0x0338034C, MMIO_SHM_DATA
+	mmio32 0x0356036A, MMIO_SHM_DATA	// high: addr for 24Mb/s ACK, low: addr for 48Mb/s ACK
+	mmio32 0x032E0342, MMIO_SHM_DATA	// high: addr for 6Mb/s ACK, low: addr for 12Mb/s ACK
+	mmio32 0x03600374, MMIO_SHM_DATA	// high: addr for 36Mb/s ACK, low: addr for 54Mb/s ACK
+	mmio32 0x0338034C, MMIO_SHM_DATA	// high: addr for 9Mb/s ACK, low: addr for 18Mb/s ACK
 
 	// CCK direct (Firmware access at 0x100 = 0x0080 * 2, real address is 0x0200)
 	// 32 bytes up to 0x0088 - 1
@@ -268,12 +268,12 @@
 
 	mmio32 0x037E037E, MMIO_SHM_DATA
 	mmio32 0x037E037E, MMIO_SHM_DATA
-	mmio32 0x037E0389, MMIO_SHM_DATA
-	mmio32 0x0394037E, MMIO_SHM_DATA
+	mmio32 0x037E0389, MMIO_SHM_DATA	//(high: -- low: addr for 2Mb/s ACK)
+	mmio32 0x0394037E, MMIO_SHM_DATA	//(high: addr for 5.5Mb/s ACK low: --)
 	mmio32 0x037E037E, MMIO_SHM_DATA
+	mmio32 0x037E037E, MMIO_SHM_DATA	//(high: -- low: addr for 1Mb/s ACK)
 	mmio32 0x037E037E, MMIO_SHM_DATA
-	mmio32 0x037E037E, MMIO_SHM_DATA
-	mmio32 0x037E039F, MMIO_SHM_DATA
+	mmio32 0x037E039F, MMIO_SHM_DATA	//(high: -- low: addr for 11Mb/s ACK)
 
 	/* Contention Window */
 
@@ -288,63 +288,63 @@
 	// Actual rate tables (Firmware access from 0x32E = 0x197 * 2, real address is 0x65C = 0x197 * 4)
 	mmio32 0x03010197, MMIO_SHM_CONTROL
 
-	mmio32 0x01CB0020, MMIO_SHM_DATA	// 0x32E
+	mmio32 0x01CB0020, MMIO_SHM_DATA	// 0x32E high: encoding for 6Mb/s ACK, low --
 	mmio32 0x00000000, MMIO_SHM_DATA
 	mmio32 0x08AB0000, MMIO_SHM_DATA
 	mmio32 0x04100000, MMIO_SHM_DATA
 	mmio32 0x00000084, MMIO_SHM_DATA
 
-	mmio32 0x01CF0014, MMIO_SHM_DATA	// 0x338
+	mmio32 0x01CF0014, MMIO_SHM_DATA	// 0x338 high: encoding for 9Mb/s ACK, low --
 	mmio32 0x00000002, MMIO_SHM_DATA
 	mmio32 0x08AF0000, MMIO_SHM_DATA
 	mmio32 0x04100002, MMIO_SHM_DATA
 	mmio32 0x00000064, MMIO_SHM_DATA
 
-	mmio32 0x01CA0010, MMIO_SHM_DATA	// 0x342
+	mmio32 0x01CA0010, MMIO_SHM_DATA	// 0x342 high: encoding for 12Mb/s ACK, low --
 	mmio32 0x00000002, MMIO_SHM_DATA
 	mmio32 0x08AA0000, MMIO_SHM_DATA
 	mmio32 0x04100002, MMIO_SHM_DATA
 	mmio32 0x00000054, MMIO_SHM_DATA
 
-	mmio32 0x01CE0008, MMIO_SHM_DATA	// 0x34C
+	mmio32 0x01CE0008, MMIO_SHM_DATA	// 0x34C high: encoding for 18Mb/s ACK, low --
 	mmio32 0x00000000, MMIO_SHM_DATA
 	mmio32 0x08AE0000, MMIO_SHM_DATA
 	mmio32 0x04100000, MMIO_SHM_DATA
 	mmio32 0x00000044, MMIO_SHM_DATA
 
-	mmio32 0x01C90008, MMIO_SHM_DATA	// 0x356
+	mmio32 0x01C90008, MMIO_SHM_DATA	// 0x356 high: encoding for 24Mb/s ACK, low --
 	mmio32 0x00000002, MMIO_SHM_DATA
 	mmio32 0x08A90000, MMIO_SHM_DATA
 	mmio32 0x04100002, MMIO_SHM_DATA
 	mmio32 0x0000003C, MMIO_SHM_DATA
 
-	mmio32 0x01CD0004, MMIO_SHM_DATA	// 0x360
+	mmio32 0x01CD0004, MMIO_SHM_DATA	// 0x360 high: encoding for 36Mb/s ACK, low --
 	mmio32 0x00000000, MMIO_SHM_DATA
 	mmio32 0x08AD0000, MMIO_SHM_DATA
 	mmio32 0x04100000, MMIO_SHM_DATA
 	mmio32 0x00000034, MMIO_SHM_DATA
 
-	mmio32 0x01C80004, MMIO_SHM_DATA	// 0x36A
+	mmio32 0x01C80004, MMIO_SHM_DATA	// 0x36A high: encoding for 48Mb/s ACK, low --
 	mmio32 0x00000000, MMIO_SHM_DATA
 	mmio32 0x08A80000, MMIO_SHM_DATA
 	mmio32 0x04100000, MMIO_SHM_DATA
 	mmio32 0x00000030, MMIO_SHM_DATA
 
-	mmio32 0x01CC0000, MMIO_SHM_DATA	// 0x374
+	mmio32 0x01CC0000, MMIO_SHM_DATA	// 0x374 high: encoding for 54Mb/s ACK, low --
 	mmio32 0x00000002, MMIO_SHM_DATA
 	mmio32 0x08AC0000, MMIO_SHM_DATA
 	mmio32 0x04100002, MMIO_SHM_DATA
 	mmio32 0x00000030, MMIO_SHM_DATA
 
-	mmio32 0x040A00C0, MMIO_SHM_DATA	// 0x37E
-	mmio32 0x00000070, MMIO_SHM_DATA
-	mmio32 0x040A013A, MMIO_SHM_DATA	
+	mmio32 0x040A00C0, MMIO_SHM_DATA	// 0x37E high: enconding for 1Mb/s ACK, low: --
+	mmio32 0x00000070, MMIO_SHM_DATA	// high: -- low: duration for 1Mb/s ACK
+	mmio32 0x040A013A, MMIO_SHM_DATA	// high: -- low: NAV for 1Mb/s ACK (314us = 14*8 + 192 + 10)
 	mmio32 0xC02C0228, MMIO_SHM_DATA
 	mmio32 0x000002F2, MMIO_SHM_DATA
 
 	mmio32 0x00600000, MMIO_SHM_DATA	// 0x388
-	mmio32 0x00380414, MMIO_SHM_DATA
-	mmio32 0x01020000, MMIO_SHM_DATA
+	mmio32 0x00380414, MMIO_SHM_DATA	// high: duration for for 2Mb/s ACK low: encoding for 2Mb/s ACK
+	mmio32 0x01020000, MMIO_SHM_DATA	// high: NAV for 2Mb/s ACK (258us = 14*8/2 + 192 + 10) low: --
 	mmio32 0x01140414, MMIO_SHM_DATA
 	mmio32 0x01DEC02C, MMIO_SHM_DATA
 
@@ -353,14 +353,14 @@
 	// Other tables (Firmware access from 0x394 = 0x1CA * 2, real address is 0x728 = 0x1CA * 4)
 	mmio32 0x030101CA, MMIO_SHM_CONTROL
 
-	mmio32 0x04370022, MMIO_SHM_DATA
-	mmio32 0x00000015, MMIO_SHM_DATA
-	mmio32 0x043700DF, MMIO_SHM_DATA
+	mmio32 0x04370022, MMIO_SHM_DATA	// high: encoding for 5.5Mb/s ACK low: --
+	mmio32 0x00000015, MMIO_SHM_DATA	// high: -- low: duration for 5.5Mb/s ACK
+	mmio32 0x043700DF, MMIO_SHM_DATA	// high: -- low: NAV for 5.5Mb/s ACK (223us = 14*8/5.5 + 192 + 10 ceiled)
 	mmio32 0xC02C0065, MMIO_SHM_DATA
 	mmio32 0x0000012E, MMIO_SHM_DATA
 	mmio32 0x00110000, MMIO_SHM_DATA
-	mmio32 0x000B846E, MMIO_SHM_DATA
-	mmio32 0x00D40000, MMIO_SHM_DATA
+	mmio32 0x000B846E, MMIO_SHM_DATA	// high: duration for 11Mb/s ACK low: encoding for 11Mb/s ACK
+	mmio32 0x00D40000, MMIO_SHM_DATA	// high: NAV for 11Mb/s ACK (should be 213us = 14*8/11 + 192 + 10 ceiled, instead it is 212??) low: --
 	mmio32 0x0033846E, MMIO_SHM_DATA
 	mmio32 0x00FCC02C, MMIO_SHM_DATA
 
