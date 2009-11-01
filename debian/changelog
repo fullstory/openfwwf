@@ -1,8 +1,8 @@
-openfwwf (5.2-0~c0.sidux.2) UNRELEASED; urgency=low
+openfwwf (5.2-0~c0.sidux.2) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * bump standards version to 3.8.3, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 21 Jul 2009 22:57:48 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 01 Nov 2009 14:53:25 +0100
 
 openfwwf (5.2-0~c0.sidux.1) unstable; urgency=low
 
