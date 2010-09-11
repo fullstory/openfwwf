@@ -37,7 +37,7 @@ openfwwf (5.2-0~c0.sidux.1) unstable; urgency=low
 openfwwf (5.1-0+c0.sidux.6) unstable; urgency=low
 
   * drop /etc/modprobe.d/openfwwf.conf and ship it only as example in
-    /usr/share/doc/openfwwf/examples/openfwwf.conf, it is no longer 
+    /usr/share/doc/openfwwf/examples/openfwwf.conf, it is no longer
     required for kernel >= 2.6.31.
   * overhaul package description and README.Debian.
   * bump policy version to 3.8.1, no changes necessary.
@@ -46,8 +46,8 @@ openfwwf (5.1-0+c0.sidux.6) unstable; urgency=low
 
 openfwwf (5.1-0+c0.sidux.5) unstable; urgency=low
 
-  * fix information from README.Debian, hwcrypto is automatically 
-    deactivated by the absence of pcm5.fw and doesn't need to be set 
+  * fix information from README.Debian, hwcrypto is automatically
+    deactivated by the absence of pcm5.fw and doesn't need to be set
     explicitly.
   * rebuild against debhelper 7.2.2 and depend on it, to inherit the new
     dh_installmodules behaviour of adding a .conf suffix and handling the
@@ -76,7 +76,7 @@ openfwwf (5.1-0+c0.sidux.2) unstable; urgency=low
   * add openfwwf.modprobe for now, to disable qos support, which doesn't work
     with openfwwf yet. Mid term target should be to either support it with
     openfwwf as well, or to disable it automatically by b43.
-  * comment out a few more debhelper modules, which are not needed yet, but 
+  * comment out a few more debhelper modules, which are not needed yet, but
     will be shortly.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 29 Jan 2009 18:24:25 +0100
