@@ -1,6 +1,6 @@
-Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
-Name: OpenFWWF
-Maintainer: OpenFWWF team <openfwwf@ing.unibs.it>
+Format: http://anonscm.debian.org/viewvc/dep/web/deps/dep5.mdwn?revision=174&view=co
+Upstream-Name: OpenFWWF
+Upstream-Contact: OpenFWWF team <openfwwf@ing.unibs.it>
 Upstream-Source: http://www.ing.unibs.it/openfwwf/firmware/
 
 Files: *
