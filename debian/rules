@@ -3,14 +3,20 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-build: build-stamp
-
-build-stamp:
+build-arch: build-arch-stamp
+build-arch-stamp:
 	dh_testdir
 	
 	$(MAKE) DEBUG=0
 	
 	touch $@
+
+build-indep: build-indep-stamp
+build-indep-stamp:
+	dh_testdir
+	touch $@
+
+build: build-arch build-indep
 
 clean: 
 	dh_testdir
@@ -30,7 +36,7 @@ install: build
 	# currently not working, we use dh_install instead
 	$(MAKE) PREFIX=$(CURDIR)/debian/openfwwf/lib/firmware/b43-open install
 
-binary-indep: install
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
@@ -38,6 +44,7 @@ binary-indep: install
 	dh_installexamples
 	dh_install
 	dh_installmodules
+	dh_lintian
 	dh_compress
 	dh_fixperms
 	dh_installdeb
@@ -45,7 +52,7 @@ binary-indep: install
 	dh_md5sums
 	dh_builddeb
 
-binary-arch: install
+binary-arch: build install
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install
