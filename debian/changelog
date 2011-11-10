@@ -1,11 +1,23 @@
-openfwwf (5.2-0~c1.aptosid.7) UNRELEASED; urgency=low
+openfwwf (5.2-0~c1.aptosid.8) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * drop examples, squeeze ships with kernel 2.6.32.
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 10 Nov 2011 20:32:38 +0100
+
+openfwwf (5.2-0~c1.aptosid.7) unstable; urgency=low
+
   * bump standards version to 3.9.2, no changes necessary.
   * use Format instead of Format-Specification in debian/copyright and fix URL
     to use alioth's new anonscm location.
+  * make lintian happier:
+    - W: openfwwf source: debian-rules-missing-recommended-target build-arch
+    - W: openfwwf source: debian-rules-missing-recommended-target build-indep
+  * override non-fixable lintian warnings:
+    - P: openfwwf: no-upstream-changelog
+  * build using b43-asm 0~20110912.1818-0+c0.aptosid.2.
+  * fix upstream's eMail address.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Fri, 16 Sep 2011 01:29:36 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 10 Nov 2011 20:13:16 +0100
 
 openfwwf (5.2-0~c1.aptosid.6) unstable; urgency=low
 

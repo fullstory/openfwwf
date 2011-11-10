@@ -22,11 +22,6 @@ override /etc/modprobe.d/openfwwf.conf with the following contents:
 
 	options b43 nohwcrypt=1 qos=0
 
-Or to just copy the corresponding example
-	/usr/share/doc/openfwwf/examples/openfwwf.conf
-to
-	/etc/modprobe.d/openfwwf.conf
-
 openfwwf >= 5.1 is compatible to the 410 header format of the proprietary
 Broadcom firmware and only works with kernels >= 2.6.25, older kernels require
 firmwares with a 351 header format (openfwwf <= 5.0).
