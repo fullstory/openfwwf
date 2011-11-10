@@ -1,9 +1,8 @@
-openfwwf (5.2-0~c1.aptosid.8) UNRELEASED; urgency=low
+openfwwf (5.2-0~c1.aptosid.8) unstable; urgency=low
 
-  * NOT RELEASED YET
   * drop examples, squeeze ships with kernel 2.6.32.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 10 Nov 2011 20:29:20 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 10 Nov 2011 20:32:38 +0100
 
 openfwwf (5.2-0~c1.aptosid.7) unstable; urgency=low
 
