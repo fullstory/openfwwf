@@ -14,11 +14,17 @@ While it might work with later core revisions as well, their RF behaviour is
 not validated and might damage the hardware or violate frequency spectrum
 regulations.
 
-OpenFWWF currently does not support hardware encryption and QOS yet. While
-kernel >= 2.6.31 will detect and support this automatically, b43 needs to be
-loaded with nohwcrypt=1 and qos=0 for older ones. To force these module
-options automatically, it is recommended to install a module-init-tools
-override /etc/modprobe.d/openfwwf.conf with the following contents:
+OpenFWWF currently does not support hardware encryption and QOS yet, which
+is detected and accomodated for by kernel >= 2.6.31.
+
+
+Compatibility with kernels << 2.6.31
+------------------------------------
+
+For kernels << 2.6.31, b43 needs to be loaded with nohwcrypt=1 and qos=0
+explicitly. To force these module options automatically, it is recommended 
+to install a module-init-tools override /etc/modprobe.d/openfwwf.conf with 
+the following contents:
 
 	options b43 nohwcrypt=1 qos=0
 
@@ -32,6 +38,10 @@ considered by kernels >= 2.6.30, older kernels expect the b43 firmware under
 kernels >= 2.6.25, it would be required to symlink /lib/firmware/b43-open/ to
 /lib/firmware/b43/, the default location for the proprietary firmware, in order
 to use OpenFWWF kernel 2.6.25 - 2.6.29.
+
+
+Disclaimer
+----------
 
 As OpenFWWF is still considered to be experimental software, the b43 kernel
 maintainers ask you to confirm eventual issues with the proprietary firmware
