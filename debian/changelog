@@ -1,6 +1,12 @@
+openfwwf (5.2-0~c1.aptosid.10) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 16 Jan 2012 03:19:55 +0100
+
 openfwwf (5.2-0~c1.aptosid.9) unstable; urgency=low
 
-  * seperate hints for obsolete kernels (pre-squeeze) in README.Debian.
+  * separate hints for obsolete kernels (pre-squeeze) in README.Debian.
   * switch to compat level 9.
 
  -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 16 Jan 2012 03:19:03 +0100
