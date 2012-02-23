@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Build-Depends: debhelper (>= 9.20120115),
  b43-asm
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: http://www.ing.unibs.it/openfwwf/
 Vcs-Svn: svn://svn.berlios.de/fullstory/openfwwf/trunk
 Vcs-Browser: http://svn.berlios.de/wsvn/fullstory/openfwwf/trunk/
