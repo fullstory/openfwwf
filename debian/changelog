@@ -1,3 +1,9 @@
+openfwwf (5.2-0~c1.aptosid.12) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Feb 2012 23:14:01 +0100
+
 openfwwf (5.2-0~c1.aptosid.11) unstable; urgency=low
 
   * update dep-5 version to final 1.0:
