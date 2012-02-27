@@ -1,8 +1,9 @@
-openfwwf (5.2-0~c1.aptosid.11) UNRELEASED; urgency=low
+openfwwf (5.2-0~c1.aptosid.11) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * update dep-5 version to final 1.0:
+    - s/Upstream-Source/Source/
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 23 Feb 2012 16:50:41 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Feb 2012 23:13:09 +0100
 
 openfwwf (5.2-0~c1.aptosid.10) unstable; urgency=low
 
