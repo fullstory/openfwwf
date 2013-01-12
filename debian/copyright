@@ -11,7 +11,7 @@ Copyright: 2008, Michael Buesch <m@bues.ch>
 License: GPL-2
 
 Files: debian/*
-Copyright: Copyright © 2009-2012, Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Copyright: Copyright © 2009-2013, Stefan Lippers-Hollmann <s.l-h@gmx.de>
 License: GPL-2
 
 License: GPL-2
@@ -25,8 +25,7 @@ License: GPL-2
  GNU General Public License for more details.
  .
  You should have received a copy of the GNU General Public License
- along with this package; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ along with this package; if not, see <http://www.gnu.org/licenses>
  .
  On Debian systems, the complete text of the GNU General
  Public License can be found in '/usr/share/common-licenses/GPL-2'.

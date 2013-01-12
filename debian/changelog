@@ -1,8 +1,9 @@
-openfwwf (5.2-0~c1.aptosid.13) UNRELEASED; urgency=low
+openfwwf (5.2-0~c1.aptosid.13) unstable; urgency=low
 
-  * NOT RELEASED YET
+  * update FSF postal address to be URLs.
+  * bump standards version to 3.9.4, no changes necessary.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 08 May 2012 00:24:44 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 12 Jan 2013 03:24:23 +0100
 
 openfwwf (5.2-0~c1.aptosid.12) unstable; urgency=low
 
