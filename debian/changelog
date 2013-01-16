@@ -1,3 +1,9 @@
+openfwwf (5.2-0~c1.aptosid.15) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 17 Jan 2013 00:30:14 +0100
+
 openfwwf (5.2-0~c1.aptosid.14) unstable; urgency=low
 
   * switch to dh9.
