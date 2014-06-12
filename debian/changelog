@@ -1,8 +1,8 @@
-openfwwf (5.2-0~c1.aptosid.17) UNRELEASED; urgency=medium
+openfwwf (5.2-0~c1.aptosid.17) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * rebuild with b43-asm 0~20130228.1231-4.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sun, 13 Apr 2014 23:46:56 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Thu, 12 Jun 2014 03:10:18 +0200
 
 openfwwf (5.2-0~c1.aptosid.16) unstable; urgency=low
 
