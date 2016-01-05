@@ -1,3 +1,9 @@
+openfwwf (5.2-0~c1.aptosid.21) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 05 Jan 2016 03:13:27 +0100
+
 openfwwf (5.2-0~c1.aptosid.20) unstable; urgency=medium
 
   * update to new debian/gbp.conf syntax.
