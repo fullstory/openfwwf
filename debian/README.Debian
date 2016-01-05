@@ -23,8 +23,8 @@ Compatibility with kernels << 2.6.31
 
 For kernels << 2.6.31, b43 needs to be loaded with nohwcrypt=1 and qos=0
 explicitly. To force these module options automatically, it is recommended 
-to install a module-init-tools override /etc/modprobe.d/openfwwf.conf with 
-the following contents:
+to install a kmod override /etc/modprobe.d/openfwwf.conf with the following
+contents:
 
 	options b43 nohwcrypt=1 qos=0
 

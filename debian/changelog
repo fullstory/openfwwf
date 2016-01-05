@@ -1,8 +1,11 @@
-openfwwf (5.2-0~c1.aptosid.20) UNRELEASED; urgency=medium
+openfwwf (5.2-0~c1.aptosid.20) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * update to new debian/gbp.conf syntax.
+  * update copyright information.
+  * rebuild with new b43-asm.
+  * s/module-init-tools/kmod/.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Sat, 01 Aug 2015 00:01:38 +0200
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Tue, 05 Jan 2016 03:10:58 +0100
 
 openfwwf (5.2-0~c1.aptosid.19) unstable; urgency=medium
 
