@@ -3,7 +3,7 @@
 DEBUG = 0
 export DEBUG
 
-PREFIX = $(CURDIR)/debian/openfwwf/lib/firmware/b43-open/
+PREFIX = $(CURDIR)/debian/openfwwf/usr/lib/firmware/b43-open/
 export PREFIX
 
 %:
