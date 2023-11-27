@@ -1,3 +1,9 @@
+openfwwf (5.2-0~c1.aptosid.22) UNRELEASED; urgency=medium
+
+  * NOT RELEASED YET
+
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Nov 2023 06:09:54 +0100
+
 openfwwf (5.2-0~c1.aptosid.21) unstable; urgency=medium
 
   * move firmware to /usr/lib/firmware/b43-open/.
