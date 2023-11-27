@@ -1,8 +1,12 @@
-openfwwf (5.2-0~c1.aptosid.22) UNRELEASED; urgency=medium
+openfwwf (5.2-0~c1.aptosid.22) unstable; urgency=medium
 
-  * NOT RELEASED YET
+  * fix lintian problems:
+    - openfwwf source: custom-compression-in-debian-source-options
+      compression = "gzip".
+    - openfwwf source: custom-compression-in-debian-source-options
+      compression-level = 9.
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Nov 2023 06:09:54 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Nov 2023 06:13:55 +0100
 
 openfwwf (5.2-0~c1.aptosid.21) unstable; urgency=medium
 
