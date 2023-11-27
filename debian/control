@@ -1,13 +1,13 @@
 Source: openfwwf
 Section: admin
-Priority: extra
+Priority: optional
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
 Rules-Requires-Root: no
 Build-Depends: debhelper-compat (= 13),
  b43-asm
 Standards-Version: 4.6.2
 Homepage: http://www.ing.unibs.it/openfwwf/
-Vcs-git: git://github.com/fullstory/openfwwf.git
+Vcs-Git: git://github.com/fullstory/openfwwf.git
 Vcs-Browser: https://github.com/fullstory/openfwwf
 
 Package: openfwwf
@@ -15,7 +15,7 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Open firmware for Broadcom BCM43xx (b43) wlan devices
  This package contains the open source firmware alternative for Broadcom
- AirForce BCM43xx wireless lan chipsets, which can be used directly in 
+ AirForce BCM43xx wireless lan chipsets, which can be used directly in
  combination  with the in-kernel b43 module of kernel 2.6.31 or above.
  .
  Known supported boards ("core revision 5" only):

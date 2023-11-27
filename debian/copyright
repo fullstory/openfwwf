@@ -1,7 +1,7 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: OpenFWWF
 Upstream-Contact: OpenFWWF team <openfwwf@ing.unibs.it>
-Source: http://www.ing.unibs.it/openfwwf/firmware/
+Source: http://netweb.ing.unibs.it/openfwwf/
 
 Files: *
 Copyright: 2008, Michael Buesch <m@bues.ch>
@@ -11,7 +11,7 @@ Copyright: 2008, Michael Buesch <m@bues.ch>
 License: GPL-2.0
 
 Files: debian/*
-Copyright: Copyright © 2009-2016, Stefan Lippers-Hollmann <s.l-h@gmx.de>
+Copyright: Copyright © 2009-2023, Stefan Lippers-Hollmann <s.l-h@gmx.de>
 License: GPL-2.0
 
 License: GPL-2.0

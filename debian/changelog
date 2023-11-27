@@ -4,8 +4,16 @@ openfwwf (5.2-0~c1.aptosid.21) unstable; urgency=medium
   * bump standards version to 4.6.2, no changes necessary.
   * switch to compat level 13.
   * allow R³=no.
+  * fix lintian problems:
+    - openfwwf source: trailing-whitespace
+    - openfwwf source: insecure-copyright-format-uri
+    - openfwwf source: cute-field Vcs-git vs Vcs-Git
+    - openfwwf: priority-extra-is-replaced-by-priority-optional
+    - openfwwf source: debian-rules-uses-unnecessary-dh-argument 13 >= 10
+      dh ... --parallel
+    - drop lintian override
 
- -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Nov 2023 05:52:58 +0100
+ -- Stefan Lippers-Hollmann <s.l-h@gmx.de>  Mon, 27 Nov 2023 06:07:59 +0100
 
 openfwwf (5.2-0~c1.aptosid.20) unstable; urgency=medium
 
