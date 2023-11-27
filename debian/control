@@ -2,9 +2,10 @@ Source: openfwwf
 Section: admin
 Priority: extra
 Maintainer: Stefan Lippers-Hollmann <s.l-h@gmx.de>
-Build-Depends: debhelper (>= 9.20120115),
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13),
  b43-asm
-Standards-Version: 3.9.6
+Standards-Version: 4.6.2
 Homepage: http://www.ing.unibs.it/openfwwf/
 Vcs-git: git://github.com/fullstory/openfwwf.git
 Vcs-Browser: https://github.com/fullstory/openfwwf
